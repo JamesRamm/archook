@@ -41,11 +41,14 @@ def get_arcpy():
   '''
   install_dir = locate_arcgis()  
   arcpy = path.join(install_dir, "arcpy")
+  # Check we have the arcpy directory.
+  if not os.path.exists(arcpy):
+    raise ImportError("Could not find arcpy directory in {0}".format(install_dir))
 
-  # Set the 'binary' directory according to the bitness of our interpreter:  
-  if sys.maxsize > 2**32:
-    bin_dir = path.join(install_dir, "bin64")
-  else:  
+  # First check if we have a bin64 directory - this exists when arcgis is 64bit
+  bin_dir = path.join(install_dir, "bin64")
+  if not os.path.exists(bin_dir):
+    # Fall back to regular 'bin' dir otherwise.
     bin_dir = path.join(install_dir, "bin")
 
   scripts = path.join(install_dir, "ArcToolbox", "Scripts")  
