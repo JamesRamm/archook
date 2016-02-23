@@ -4,7 +4,7 @@ Created on 13 Feb 2015
 @author: Jamesramm
 '''
 import _winreg
-import sys, os
+import sys
 from os import path
 def locate_arcgis():
   '''
@@ -42,12 +42,12 @@ def get_arcpy():
   install_dir = locate_arcgis()  
   arcpy = path.join(install_dir, "arcpy")
   # Check we have the arcpy directory.
-  if not os.path.exists(arcpy):
+  if not path.exists(arcpy):
     raise ImportError("Could not find arcpy directory in {0}".format(install_dir))
 
   # First check if we have a bin64 directory - this exists when arcgis is 64bit
   bin_dir = path.join(install_dir, "bin64")
-  if not os.path.exists(bin_dir):
+  if not path.exists(bin_dir):
     # Fall back to regular 'bin' dir otherwise.
     bin_dir = path.join(install_dir, "bin")
 
