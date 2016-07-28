@@ -2,10 +2,10 @@ from setuptools import setup, find_packages
 
 setup(
     name='archook',
-    version="1.0.0.dev",
+    version="1.0.0",
     description='Locates arcpy.',
     maintainer='James Ramm',
-    maintainer_email='JamesRamm@users.noreply.github.com',
+    maintainer_email='jamessramm@gmail.com',
     url='https://github.com/JamesRamm/archook',
     packages=find_packages(),
     include_package_data=True,
