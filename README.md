@@ -14,6 +14,6 @@ except ImportError:
 
 ## Installation
 
-You can pip install from GitHub:
+Install with pip:
 
-    pip install git+ssh://git@github.com/JamesRamm/archook.git
+    pip install archook
