@@ -47,7 +47,11 @@ def get_arcpy():
 
   # First check if we have a bin64 directory - this exists when arcgis is 64bit
   bin_dir = path.join(install_dir, "bin64")
-  if not path.exists(bin_dir):
+  
+  # check if we are using a 64-bit version of Python
+  is_64bits = sys.maxsize > 2**32
+  
+  if not path.exists(bin_dir) or is_64bits == False:
     # Fall back to regular 'bin' dir otherwise.
     bin_dir = path.join(install_dir, "bin")
 
