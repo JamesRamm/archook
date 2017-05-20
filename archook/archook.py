@@ -3,7 +3,7 @@ Locate ArcPy and add it to the path
 Created on 13 Feb 2015
 @author: Jamesramm
 '''
-import _winreg
+import winreg
 import sys
 from os import path
 def locate_arcgis():
