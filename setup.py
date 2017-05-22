@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='archook',
-    version="1.1.0",
+    version="1.2.0",
     description='Locates arcpy and makes it available to the running python distribution',
     maintainer='James Ramm',
     maintainer_email='jamessramm@gmail.com',
