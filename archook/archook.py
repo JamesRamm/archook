@@ -60,7 +60,7 @@ def get_arcpy(pro=False):
     sys.path.append(os.path.join(install_dir, 'bin'))
     sys.path.append(os.path.join(install_dir, r'Resources\ArcPy'))
     sys.path.append(os.path.join(install_dir, r'Resources\ArcToolbox\Scripts'))
-    sys.path.append(os.path.join(install_dir, r'bin\Python\envs\arcgispro-py3\Lib\site-packages'))
+    sys.path.append(os.path.join(locate_conda(), r'Lib\site-packages'))
   else:
     arcpy = os.path.join(install_dir, "arcpy")
     # Check we have the arcpy directory.
@@ -79,3 +79,21 @@ def get_arcpy(pro=False):
 
     scripts = os.path.join(install_dir, "ArcToolbox", "Scripts")  
     sys.path.extend([arcpy, bin_dir, scripts])
+
+def locate_conda():
+  '''
+  Returns the path to the ArcGIS Pro-managed conda environment.
+  '''
+  try:
+    pro_key = _winreg.OpenKey(
+        _winreg.HKEY_LOCAL_MACHINE,
+        'SOFTWARE\\ESRI\\ArcGISPro'
+      )
+    conda_root = _winreg.QueryValueEx(pro_key, 'PythonCondaRoot')[0]
+    conda_env = _winreg.QueryValueEx(pro_key, 'PythonCondaEnv')[0]
+    conda_path = os.path.join(conda_root, 'envs', conda_env)
+    if not os.path.exists(conda_path):
+      raise ImportError('Could not find Conda environment {} in root directory {}'.format(conda_env, conda_root))
+    return conda_path
+  except WindowsError:
+    raise ImportError('Could not locate the Conda directory on this machine')
