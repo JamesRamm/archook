@@ -108,6 +108,6 @@ def get_pro_key():
     '''
     pro_key = _winreg.OpenKey(
         _winreg.HKEY_LOCAL_MACHINE,
-        'SOFTWARE\\ESRI\\ArcGISPro'
+        r'SOFTWARE\ESRI\ArcGISPro'
     )
     return pro_key
