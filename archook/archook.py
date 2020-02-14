@@ -61,11 +61,16 @@ def get_arcpy(pro=False):
     '''
     install_dir = locate_arcgis(pro)
     if pro:
-        os.environ['PATH'] = ';'.join((os.path.join(install_dir, 'bin'), os.environ['PATH']))
+        conda_dir = locate_conda()
+        os.environ['PATH'] = ';'.join((
+            os.path.join(install_dir, 'bin'),
+            os.path.join(conda_dir, r'Library\bin'),
+            os.environ['PATH']
+        ))
         sys.path.append(os.path.join(install_dir, 'bin'))
         sys.path.append(os.path.join(install_dir, r'Resources\ArcPy'))
         sys.path.append(os.path.join(install_dir, r'Resources\ArcToolbox\Scripts'))
-        sys.path.append(os.path.join(locate_conda(), r'Lib\site-packages'))
+        sys.path.append(os.path.join(conda_dir, r'Lib\site-packages'))
     else:
         arcpy = os.path.join(install_dir, 'arcpy')
         # Check we have the arcpy directory.
