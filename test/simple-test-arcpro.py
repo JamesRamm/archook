@@ -3,23 +3,20 @@ print("="*40)
 import sys
 import archook
 
-pre = []
-for p in sys.path:
-    pre.append(p)
+print("\n--- PRE sys.path:")
+for x in sys.path:
+    print(x)
 
 r = archook.get_arcpy(pro=True)
-print("ArcGIS Pro archook result: %s" % r)
+print("\n--- ArcGIS Pro archook result: %s" % r)
 
-post = []
-for p in sys.path:
-    post.append(p)
+print("\n--- POST sys.path:")
+for x in sys.path:
+    print(x)
 
 try:
     import arcpy
-    print(f"Arcpy Workspace: {arcpy.env.workspace}")
+    print(f"\n--- Arcpy Workspace: {arcpy.env.workspace}")
 
 except ImportError as e:
-    print(f"\n{e}\n")
-    print(f"\nPre sys.path: {pre}")
-    print(f"\nPost sys.path: {post}")
-
+    print(f"\n*** Error: {e}\n")
