@@ -60,17 +60,26 @@ def get_arcpy(pro=False):
     Looks for ArcGIS Pro if `pro` argument is True.
     '''
     install_dir = locate_arcgis(pro)
+
     if pro:
         conda_dir = locate_conda()
+
+        # update Windows exe path
         os.environ['PATH'] = ';'.join((
             os.path.join(install_dir, 'bin'),
             os.path.join(conda_dir, r'Library\bin'),
             os.environ['PATH']
         ))
-        sys.path.append(os.path.join(install_dir, 'bin'))
-        sys.path.append(os.path.join(install_dir, r'Resources\ArcPy'))
-        sys.path.append(os.path.join(install_dir, r'Resources\ArcToolbox\Scripts'))
-        sys.path.append(os.path.join(conda_dir, r'Lib\site-packages'))
+
+        # Update Python's path
+        dirs = ['', 'bin', 'DLLs', 'lib', 'lib/site-packages',
+            'Resources/ArcPy', 'Resources/ArcToolbox/Scripts']
+        for p in dirs:
+            sys.path.append(os.path.join(install_dir, p))
+
+        #shouldn;t this already be in sys.path?
+        #sys.path.append(os.path.join(conda_dir, r'Lib\site-packages'))
+
     else:
         arcpy = os.path.join(install_dir, 'arcpy')
         # Check we have the arcpy directory.
