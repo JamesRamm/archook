@@ -75,7 +75,7 @@ def get_arcpy(pro=False):
         dirs = ['', 'bin', 'DLLs', 'lib', 'lib/site-packages',
             'Resources/ArcPy', 'Resources/ArcToolbox/Scripts']
         for p in dirs:
-            sys.path.append(os.path.join(install_dir, p))
+            sys.path.insert(0, os.path.join(install_dir, p))
 
         #shouldn;t this already be in sys.path?
         #sys.path.append(os.path.join(conda_dir, r'Lib\site-packages'))
