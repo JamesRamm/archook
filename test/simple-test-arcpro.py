@@ -2,6 +2,9 @@
 print("="*40)
 import sys
 import archook
+import traceback
+
+print(sys.version)
 
 print("\n--- PRE sys.path:")
 for x in sys.path:
@@ -20,3 +23,4 @@ try:
 
 except ImportError as e:
     print(f"\n*** Error: {e}\n")
+    print(traceback.format_exc())
