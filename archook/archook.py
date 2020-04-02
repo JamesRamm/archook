@@ -9,7 +9,34 @@ except ImportError:
     import winreg as _winreg
 import os
 import sys
+import struct
 
+def get_python_bitness():
+    '''Return bit size of active python interpreter (ie. 32, 64)'''
+    return struct.calcsize('P')*8
+
+def get_arc_bitness(pro=False):
+    '''Return 32 or 64 bit nature of ArGIS binaries.'''
+    # Pro is always 64bit
+    if pro:
+        return 64
+    install_dir = locate_arcgis()
+    # print(install_dir) # debug
+    if os.path.exists(os.path.join(install_dir, 'bin64')):
+        return 64
+    elif os.path.exists(os.path.join(install_dir, 'bin')):
+        return 32
+    return None
+
+def verify_bit_match(pro=False):
+    '''Return true if python interpreter and ArcGIS bitness match each other'''
+    pybits = get_python_bitness()
+    arcbits = get_arc_bitness(pro)
+    match = pybits == arcbits
+    if not match:
+        msg = "*** Error: python and arcgis 32/64bit mismatch: Py:{}, Arc:{}".format(pybits, arcbits)
+        raise Exception(msg)
+    return match
 
 def locate_arcgis(pro=False):
     '''
@@ -51,7 +78,6 @@ def locate_arcgis(pro=False):
     except WindowsError:
         raise ImportError('Could not locate the ArcGIS directory on this machine')
 
-
 def get_arcpy(pro=False):
     '''
     Allows arcpy to imported on 'unmanaged' python installations (i.e. python installations
@@ -62,6 +88,8 @@ def get_arcpy(pro=False):
     install_dir = locate_arcgis(pro)
 
     if pro:
+        verify_bit_match(pro)
+
         conda_dir = locate_conda()
 
         # update Windows exe path
@@ -81,23 +109,34 @@ def get_arcpy(pro=False):
         #sys.path.append(os.path.join(conda_dir, r'Lib\site-packages'))
 
     else:
+        verify_bit_match()
         arcpy = os.path.join(install_dir, 'arcpy')
         # Check we have the arcpy directory.
         if not os.path.exists(arcpy):
             raise ImportError('Could not find arcpy directory in {0}'.format(install_dir))
 
-        # First check if we have a bin64 directory - this exists when arcgis is 64bit
-        bin_dir = os.path.join(install_dir, 'bin64')
-
-        # check if we are using a 64-bit version of Python
-        is_64bits = sys.maxsize > 2**32
-
-        if not os.path.exists(bin_dir) or not is_64bits:
-            # Fall back to regular 'bin' dir otherwise.
+        if get_arc_bitness() == 64:
+            bin_dir = os.path.join(install_dir, 'bin64')
+        else:
             bin_dir = os.path.join(install_dir, 'bin')
 
-        scripts = os.path.join(install_dir, 'ArcToolbox', 'Scripts')
-        sys.path.extend([arcpy, bin_dir, scripts])
+        # Update Python's path
+        dirs = ['', arcpy, bin_dir, 'ArcToolbox/Scripts']
+        for p in dirs:
+            sys.path.insert(0, os.path.join(install_dir, p))
+
+        # # First check if we have a bin64 directory - this exists when arcgis is 64bit
+        # bin64_dir = os.path.join(install_dir, 'bin64')
+
+        # # check if we are using a 64-bit version of Python
+        # is_64bits = sys.maxsize > 2**32
+
+        # if not os.path.exists(bin_dir) or not is_64bits:
+        #     # Fall back to regular 'bin' dir otherwise.
+        #     bin_dir = os.path.join(install_dir, 'bin')
+
+        # scripts = os.path.join(install_dir, 'ArcToolbox', 'Scripts')
+        # sys.path.extend([arcpy, bin_dir, scripts])
 
 
 def locate_conda():
@@ -125,3 +164,14 @@ def get_pro_key():
         r'SOFTWARE\ESRI\ArcGISPro'
     )
     return pro_key
+
+def thankyou():
+    d = {}
+    d['@logan-pugh'] = 'Python and Arc bit level must be the same\n\t (https://github.com/JamesRamm/archook/issues/22)'
+    d['@ChristopheD'] = 'Concise bitness for any python version\n\t (https://stackoverflow.com/questions/1405913/how-do-i-determine-if-my-python-shell-is-executing-in-32bit-or-64bit-mode-on-os)'
+
+    print('='*72)
+    print("Thank you for the help:\n")
+    for k, v in d.items():
+        print("{}:\n\t{}".format(k, v))
+    print('='*72)
