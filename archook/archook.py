@@ -11,6 +11,24 @@ import os
 import sys
 import struct
 
+def verify_conda_meta_dir():
+    '''Issue warning if conda-meta folder does not exist
+
+    Arcpy checks folder exists regardless of whether actually using conda.
+    (https://github.com/JamesRamm/archook/issues/22#issuecomment-624262435)
+    '''
+    cmeta = os.path.join(sys.exec_prefix, "conda-meta")
+    if not os.path.exists(cmeta):
+        print(f"""
+Doesn't exist:
+   {cmeta}
+
+   You may need to create this directory if you get an error like:
+
+   ImportError("arcpy needs to run within an active ArcGIS Conda environment")
+""")
+    return
+
 def get_python_bitness():
     '''Return bit size of active python interpreter (ie. 32, 64)'''
     return struct.calcsize('P')*8
@@ -89,6 +107,7 @@ def get_arcpy(pro=False):
 
     if pro:
         verify_bit_match(pro)
+        verify_conda_meta_dir()
 
         conda_dir = locate_conda()
 
@@ -137,6 +156,7 @@ def get_arcpy(pro=False):
 
         # scripts = os.path.join(install_dir, 'ArcToolbox', 'Scripts')
         # sys.path.extend([arcpy, bin_dir, scripts])
+
 
 
 def locate_conda():
