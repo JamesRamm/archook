@@ -11,24 +11,6 @@ import os
 import sys
 import struct
 
-def verify_conda_meta_dir():
-    '''Issue warning if conda-meta folder does not exist
-
-    Arcpy checks folder exists regardless of whether actually using conda.
-    (https://github.com/JamesRamm/archook/issues/22#issuecomment-624262435)
-    '''
-    cmeta = os.path.join(sys.exec_prefix, "conda-meta")
-    if not os.path.exists(cmeta):
-        print(f"""
-Doesn't exist:
-   {cmeta}
-
-   You may need to create this directory if you get an error like:
-
-   ImportError("arcpy needs to run within an active ArcGIS Conda environment")
-""")
-    return
-
 def get_python_bitness():
     '''Return bit size of active python interpreter (ie. 32, 64)'''
     return struct.calcsize('P')*8
@@ -55,6 +37,25 @@ def verify_bit_match(pro=False):
         msg = "*** Error: python and arcgis 32/64bit mismatch: Py:{}, Arc:{}".format(pybits, arcbits)
         raise Exception(msg)
     return match
+
+def verify_conda_meta_dir():
+    '''Issue warning if conda-meta folder does not exist
+
+    Arcpy checks folder exists regardless of whether actually using conda.
+    (https://github.com/JamesRamm/archook/issues/22#issuecomment-624262435)
+    '''
+    cmeta = os.path.join(sys.exec_prefix, "conda-meta")
+    if not os.path.exists(cmeta):
+        print(f"""
+Doesn't exist:
+   {cmeta}
+
+   You may need to create this directory if you get an error like:
+
+   ImportError("arcpy needs to run within an active ArcGIS Conda environment")
+""")
+    return
+
 
 def locate_arcgis(pro=False):
     '''
