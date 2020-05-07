@@ -10,6 +10,7 @@ except ImportError:
 import os
 import sys
 import struct
+import inspect
 
 def get_python_bitness():
     '''Return bit size of active python interpreter (ie. 32, 64)'''
@@ -56,7 +57,6 @@ Doesn't exist:
 """)
     return
 
-
 def locate_arcgis(pro=False):
     '''
     Find the path to the ArcGIS Desktop installation, or the ArcGIS Pro installation
@@ -97,6 +97,35 @@ def locate_arcgis(pro=False):
     except WindowsError:
         raise ImportError('Could not locate the ArcGIS directory on this machine')
 
+def get_pro_paths():
+    '''Return 2 lists, for adding to Windows PATH and python sys.path'''
+    P = locate_arcgis(pro=True)
+    C = locate_pro_conda()
+    # P = r"C:\Program Files\ArcGIS\Pro"
+    # C = r"C:\Program Files\ArcGIS\Pro\bin\Python\envs\arcgispro-py3"
+    PRO_WIN_PATHS = inspect.cleandoc(rf"""
+        {C}
+        {C}\Library\mingw-w64
+        {C}\Library\usr\bin
+        {C}\Library\bin
+        {C}\Scripts
+        {P}\Python\Scripts
+        {P}\bin
+        """)
+    PRO_SYSPATHS = inspect.cleandoc(rf"""
+        {C}
+        {C}\python36.zip
+        {C}\DLLs
+        {C}\lib
+        {C}\lib\site-packages
+        {P}\bin
+        {P}\Resources\ArcPy
+        {P}\Resources\ArcToolbox\Scripts
+        """)
+    winpaths = PRO_WIN_PATHS.splitlines()
+    syspaths = PRO_SYSPATHS.splitlines()
+    return [winpaths, syspaths]
+
 def get_arcpy(pro=False):
     '''
     Allows arcpy to imported on 'unmanaged' python installations (i.e. python installations
@@ -109,24 +138,15 @@ def get_arcpy(pro=False):
     if pro:
         verify_bit_match(pro)
         verify_conda_meta_dir()
+        pro_conda_dir = locate_pro_conda()
 
-        conda_dir = locate_conda()
-
-        # update Windows exe path
-        os.environ['PATH'] = ';'.join((
-            os.path.join(install_dir, 'bin'),
-            os.path.join(conda_dir, r'Library\bin'),
-            os.environ['PATH']
-        ))
-
-        # Update Python's path
-        dirs = ['', 'bin', 'DLLs', 'lib', 'lib/site-packages',
-            'Resources/ArcPy', 'Resources/ArcToolbox/Scripts']
-        for p in dirs:
-            sys.path.insert(0, os.path.join(install_dir, p))
-
-        #shouldn;t this already be in sys.path?
-        #sys.path.append(os.path.join(conda_dir, r'Lib\site-packages'))
+        winpaths, syspaths = get_pro_paths()
+        # update Windows PATH
+        wp = os.environ['PATH'].split(';') # save incoming path
+        [wp.insert(0,x) for x in winpaths] # prepend our new syspath
+        os.environ['PATH'] = ';'.join(wp) # write back to environment
+        # update sys.path
+        [sys.path.insert(0, x) for x in syspaths]
 
     else:
         verify_bit_match()
@@ -160,7 +180,7 @@ def get_arcpy(pro=False):
 
 
 
-def locate_conda():
+def locate_pro_conda():
     '''
     Returns the path to the ArcGIS Pro-managed conda environment.
     '''
