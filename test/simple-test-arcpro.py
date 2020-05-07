@@ -9,13 +9,16 @@ print(sys.version)
 print("\n--- PRE sys.path:")
 for x in sys.path:
     print(x)
+print("---")
 
 r = archook.get_arcpy(pro=True)
 print("\n--- ArcGIS Pro archook result: %s" % r)
+print("---")
 
 print("\n--- POST sys.path:")
 for x in sys.path:
     print(x)
+print("---")
 
 try:
     import arcpy
