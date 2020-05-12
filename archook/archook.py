@@ -54,14 +54,16 @@ def verify_conda_meta_dir():
     cmeta = os.path.join(sys.exec_prefix, "conda-meta")
     if not os.path.exists(cmeta):
         print(
-            f"""
+            """
 Doesn't exist:
    {cmeta}
 
    You may need to create this directory if you get an error like:
 
    ImportError("arcpy needs to run within an active ArcGIS Conda environment")
-"""
+""".format(
+                cmeta
+            )
         )
     return
 
@@ -108,7 +110,7 @@ def get_pro_paths():
     # P = r"C:\Program Files\ArcGIS\Pro"
     # C = r"C:\Program Files\ArcGIS\Pro\bin\Python\envs\arcgispro-py3"
     PRO_WIN_PATHS = inspect.cleandoc(
-        rf"""
+        r"""
         {C}
         {C}\Library\mingw-w64
         {C}\Library\usr\bin
@@ -116,10 +118,12 @@ def get_pro_paths():
         {C}\Scripts
         {P}\Python\Scripts
         {P}\bin
-        """
+        """.format(
+            C, P
+        )
     )
     PRO_SYSPATHS = inspect.cleandoc(
-        rf"""
+        r"""
         {C}
         {C}\python36.zip
         {C}\DLLs
@@ -128,7 +132,9 @@ def get_pro_paths():
         {P}\bin
         {P}\Resources\ArcPy
         {P}\Resources\ArcToolbox\Scripts
-        """
+        """.format(
+            C, P
+        )
     )
     winpaths = PRO_WIN_PATHS.splitlines()
     syspaths = PRO_SYSPATHS.splitlines()
