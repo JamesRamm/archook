@@ -223,6 +223,9 @@ def thankyou():
     d[
         "@ChristopheD"
     ] = "Concise bitness for any python version\n\t (https://stackoverflow.com/questions/1405913/how-do-i-determine-if-my-python-shell-is-executing-in-32bit-or-64bit-mode-on-os)"
+    d[
+        "@jesegal"
+    ] = "Use format(x=x) instead of format(x) to handle both py 2 & 3"
 
     print("=" * 72)
     print("Thank you for the help:\n")
