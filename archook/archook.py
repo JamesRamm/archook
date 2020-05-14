@@ -118,10 +118,7 @@ def get_pro_paths():
         {C}\Scripts
         {P}\Python\Scripts
         {P}\bin
-        """.format(
-            C, P
-        )
-    )
+        """.format(C=C, P=P))
     PRO_SYSPATHS = inspect.cleandoc(
         r"""
         {C}
@@ -132,10 +129,7 @@ def get_pro_paths():
         {P}\bin
         {P}\Resources\ArcPy
         {P}\Resources\ArcToolbox\Scripts
-        """.format(
-            C, P
-        )
-    )
+        """.format(C=C, P=P))
     winpaths = PRO_WIN_PATHS.splitlines()
     syspaths = PRO_SYSPATHS.splitlines()
     return [winpaths, syspaths]
