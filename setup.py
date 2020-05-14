@@ -1,10 +1,18 @@
 from setuptools import setup, find_packages
+from os import path
 
+here = path.abspath(path.dirname(__file__))
+
+with open(path.join(here, 'README.md')) as f:
+    long_description = f.read()
+    
 setup(
     name="archook",
     version="1.3.0",
     use_scm_version=True,
     description="Locates arcpy and makes it available to the running python distribution",
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     maintainer="Matt Wilkie",
     maintainer_email="matt.wilkie@gov.yk.ca",
     url="https://github.com/JamesRamm/archook",
@@ -18,4 +26,5 @@ setup(
         "Operating System :: Microsoft :: Windows",
     ],
     setup_requires=['setuptools_scm'],
+    install_requires=['setuptools_scm'],
 )

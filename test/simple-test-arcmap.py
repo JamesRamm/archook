@@ -13,6 +13,9 @@ for x in sys.path:
 r = archook.get_arcpy()
 print("\n--- ArcGIS Desktop archook result: %s" % r)
 
+print("\n--- archook version: %s" % archook.version)
+print("---")
+
 print("\n--- POST sys.path:")
 for x in sys.path:
     print(x)

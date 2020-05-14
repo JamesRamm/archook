@@ -1,9 +1,12 @@
-call conda create -n archook-py36 python=3.6
-call conda activate archook-py36
-call conda install numpy
+call conda create -y --name archook-py36 python=3.6 -y
+call conda activate  archook-py36
+call conda install -y numpy
 @echo. --------------------------------
-@echo. Next step: 
+@echo. Next steps:
 @echo. 
-@echo.   pip install --editable ..
+@echo.   python -m pip install --editable ..
+@echo. or
+@echo.   python -m pip install ..
+@echo.
 @echo.   Test archook
 @echo.
