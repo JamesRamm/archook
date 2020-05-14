@@ -8,8 +8,8 @@ with open(path.join(here, 'README.md')) as f:
     
 setup(
     name="archook",
-    version="1.3.0",
-    use_scm_version=True,
+    version="1.3",
+    use_scm_version=True, # overrides version with Git info, if present
     description="Locates arcpy and makes it available to the running python distribution",
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -25,6 +25,6 @@ setup(
         "Topic :: Scientific/Engineering",
         "Operating System :: Microsoft :: Windows",
     ],
-    setup_requires=['setuptools_scm'],
-    install_requires=['setuptools_scm'],
+    setup_requires=['setuptools_scm'], # make available before attempting install
+    install_requires=['setuptools_scm'], # keep available after install
 )
