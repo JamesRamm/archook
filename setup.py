@@ -8,7 +8,7 @@ with open(path.join(here, 'README.md')) as f:
     
 setup(
     name="archook",
-    version="1.3",
+    version="1.3.0-dev",
     use_scm_version=True, # overrides version with Git info, if present
     description="Locates arcpy and makes it available to the running python distribution",
     long_description=long_description,
