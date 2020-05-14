@@ -3,14 +3,14 @@ Locate ArcPy and add it to the path
 Created on 13 Feb 2015
 @author: Jamesramm
 """
-try:
-    import _winreg
-except ImportError:
-    import winreg as _winreg
 import os
 import sys
 import struct
 import inspect
+try:
+    import _winreg
+except ImportError:
+    import winreg as _winreg
 
 
 def get_python_bitness():
@@ -61,10 +61,7 @@ Doesn't exist:
    You may need to create this directory if you get an error like:
 
    ImportError("arcpy needs to run within an active ArcGIS Conda environment")
-""".format(
-                cmeta
-            )
-        )
+""".format(cmeta=cmeta))
     return
 
 
@@ -147,7 +144,7 @@ def get_arcpy(pro=False):
     if pro:
         verify_bit_match(pro)
         verify_conda_meta_dir()
-        pro_conda_dir = locate_pro_conda()
+        # pro_conda_dir = locate_pro_conda()
 
         winpaths, syspaths = get_pro_paths()
         # update Windows PATH

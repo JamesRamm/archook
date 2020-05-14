@@ -1,9 +1,9 @@
 # manual test (not a unit test)
-print("="*40)
 import sys
 import archook
 import traceback
 
+print("=" * 40)
 print(sys.version)
 
 print("\n--- PRE sys.path:")
