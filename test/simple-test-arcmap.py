@@ -22,6 +22,7 @@ for x in sys.path:
 
 try:
     import arcpy
+
     print("\n--- Arcpy Workspace: %s" % arcpy.env.workspace)
 
 except ImportError as e:

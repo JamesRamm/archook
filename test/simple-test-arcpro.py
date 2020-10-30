@@ -26,6 +26,7 @@ print("---")
 
 try:
     import arcpy
+
     print(f"\n--- Arcpy Workspace: {arcpy.env.workspace}")
 
 except ImportError as e:
