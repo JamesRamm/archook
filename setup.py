@@ -3,12 +3,15 @@ from os import path
 
 here = path.abspath(path.dirname(__file__))
 
+with open(path.join(here, 'archook', 'VERSION')) as f:
+    version = f.read().strip()
+
 with open(path.join(here, 'README.md')) as f:
     long_description = f.read()
     
 setup(
     name="archook",
-    version="1.3.dev0",
+    version=version,
     description="Locates arcpy and makes it available to the running python distribution",
     long_description=long_description,
     long_description_content_type='text/markdown',
