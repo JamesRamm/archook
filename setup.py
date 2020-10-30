@@ -8,7 +8,7 @@ with open(path.join(here, 'README.md')) as f:
     
 setup(
     name="archook",
-    version="1.3.0-dev",
+    version="1.3.dev0",
     description="Locates arcpy and makes it available to the running python distribution",
     long_description=long_description,
     long_description_content_type='text/markdown',
