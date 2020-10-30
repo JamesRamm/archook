@@ -1,7 +1,8 @@
 [![PyPI version](https://badge.fury.io/py/archook.svg)](https://badge.fury.io/py/archook)
 
 # archook
-Searches the (windows) system for arcgis and makes arcpy available to python (regardless of pythonpath/system path/registry settings)
+Searches the (windows) system for arcgis and makes arcpy available to python (regardless of pythonpath/system path/registry settings). It's typically used when using a python distribution that's wasn't installed by ArcGIS. Ones downloaded direct from Python.org or a conda environment for two examples.
+
 If ArcGIS is not found, an `ImportError` is thrown.
 
 Use `pro=True` to target ArcGIS Pro instead of ArcGIS Desktop.
