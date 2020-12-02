@@ -1,0 +1,55 @@
+name: Python package
+
+on: 
+  push:
+    branches:
+    - master
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.6, 3.7, 3.8]
+
+    steps:
+    - uses: actions/checkout@master
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        version: ${{ matrix.python-version }}
+
+    - name: calculateVersionTag
+      id: calculateImageTag
+      run: |
+        VERSIONTAG=$(date +%Y%m%d-%H%M)
+        echo ::set-output name=VERSIONTAG::${VERSIONTAG}
+
+    - name: is pull closed merged master python
+      env: 
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: |
+        echo $GITHUB_CONTEXT > gha_context.json
+        is_closed_merged_pr=$(python is_pull_request.py gha_context.json)
+        echo "is_closed_merged_pr: $is_closed_merged_pr"
+        if [[ $is_closed_merged_pr == 'True' ]]; 
+            then
+                echo is a pr
+                exit 0
+            else
+                echo is not a pr
+                exit 1
+        fi
+
+    - name: Build and Upload
+      if: success()
+      env:
+          TWINE_USERNAME:  ${{ secrets.TWINE_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+          PKG_TYPE: PROD
+          VERSIONTAG: ${{ steps.calculateVersionTag.outputs.VERSIONTAG }}
+      run: |
+        python --version
+        python setup.py sdist bdist_wheel
+        python -m twine upload dist/*
