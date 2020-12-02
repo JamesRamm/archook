@@ -1,0 +1,7 @@
+# requirements for building the pypi package
+twine==3.2.0
+distlib
+packaging==20.7
+pylint==1.9.4
+wheel==0.36.0
+requests==2.25.0
