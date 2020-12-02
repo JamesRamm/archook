@@ -11,7 +11,8 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.6]
+        #python-version: [3.6, 3.7, 3.8]
 
     steps:
     - uses: actions/checkout@master
@@ -32,6 +33,8 @@ jobs:
       run: |
         echo $GITHUB_CONTEXT > gha_context.json
         curl https://raw.githubusercontent.com/bcgov/bcdc-test/dev/is_pull_request.py --output is_pull_request.py
+        pip install requests
+        ls -l
         is_closed_merged_pr=$(python is_pull_request.py gha_context.json)
         echo "is_closed_merged_pr: $is_closed_merged_pr"
         if [[ $is_closed_merged_pr == 'True' ]]; 
