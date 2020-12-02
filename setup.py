@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-here = os.path.abspath(path.dirname(__file__))
+here = os.path.abspath(os.path.dirname(__file__))
 
 if 'VERSIONTAG' in os.environ:
     version=os.environ['VERSIONTAG']
