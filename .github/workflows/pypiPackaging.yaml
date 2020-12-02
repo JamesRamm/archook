@@ -24,7 +24,7 @@ jobs:
     - name: calculate Version Tag
       id: calculateVersionTag
       run: |
-        VERSIONTAG=$(date +%Y%m%d-%H%M)
+        VERSIONTAG=$(date +%Y%m.%d.%H%M)
         echo ::set-output name=VERSIONTAG::${VERSIONTAG}
 
     - name: is pull closed merged master python
