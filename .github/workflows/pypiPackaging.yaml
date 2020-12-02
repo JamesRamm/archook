@@ -31,6 +31,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJson(github) }}
       run: |
         echo $GITHUB_CONTEXT > gha_context.json
+        curl https://raw.githubusercontent.com/bcgov/bcdc-test/dev/is_pull_request.py --output is_pull_request.py
         is_closed_merged_pr=$(python is_pull_request.py gha_context.json)
         echo "is_closed_merged_pr: $is_closed_merged_pr"
         if [[ $is_closed_merged_pr == 'True' ]]; 
@@ -43,7 +44,7 @@ jobs:
         fi
 
     - name: Build and Upload
-      if: success()
+      #if: success()
       env:
           TWINE_USERNAME:  ${{ secrets.TWINE_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
