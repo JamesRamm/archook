@@ -44,7 +44,7 @@ jobs:
         fi
 
     - name: Build and Upload
-      #if: success()
+      if: success()
       env:
           TWINE_USERNAME:  ${{ secrets.TWINE_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
