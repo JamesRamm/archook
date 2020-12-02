@@ -33,7 +33,7 @@ jobs:
       run: |
         echo $GITHUB_CONTEXT > gha_context.json
         curl https://raw.githubusercontent.com/bcgov/bcdc-test/dev/is_pull_request.py --output is_pull_request.py
-        pip install requests
+        pip install requests==2.25.0
         ls -l
         is_closed_merged_pr=$(python is_pull_request.py gha_context.json)
         echo "is_closed_merged_pr: $is_closed_merged_pr"
@@ -54,6 +54,7 @@ jobs:
           PKG_TYPE: PROD
           VERSIONTAG: ${{ steps.calculateVersionTag.outputs.VERSIONTAG }}
       run: |
+        python -m pip install -r requirements_build.txt
         python --version
         python setup.py sdist bdist_wheel
         python -m twine upload dist/*
