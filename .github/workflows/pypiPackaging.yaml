@@ -22,7 +22,7 @@ jobs:
         version: ${{ matrix.python-version }}
 
     - name: calculateVersionTag
-      id: calculateImageTag
+      id: calculateVersionTag
       run: |
         VERSIONTAG=$(date +%Y%m%d-%H%M)
         echo ::set-output name=VERSIONTAG::${VERSIONTAG}
