@@ -1,16 +1,19 @@
 from setuptools import setup, find_packages
-from os import path
+import os
 
-here = path.abspath(path.dirname(__file__))
+here = os.path.abspath(os.path.dirname(__file__))
 
-with open(path.join(here, "archook", "VERSION")) as f:
-    version = f.read().strip()
+if 'VERSIONTAG' in os.environ:
+    version=os.environ['VERSIONTAG']
+else:
+    with open(os.path.join(here, "archook", "VERSION")) as f:
+        version = f.read().strip()
 
-with open(path.join(here, "README.md")) as f:
+with open(os.path.join(here, "README.md")) as f:
     long_description = f.read()
 
 setup(
-    name="archook",
+    name="archook_dbc",
     version=version,
     description="Locates arcpy and makes it available to the running python distribution",
     long_description=long_description,
