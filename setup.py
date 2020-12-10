@@ -13,7 +13,7 @@ with open(os.path.join(here, "README.md")) as f:
     long_description = f.read()
 
 setup(
-    name="archook_dbc",
+    name="archook",
     version=version,
     description="Locates arcpy and makes it available to the running python distribution",
     long_description=long_description,
