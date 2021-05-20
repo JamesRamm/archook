@@ -1,3 +1,4 @@
+@call conda deactivate
 @call conda activate archook-py36
 @echo.
 @echo.  Next: test archook. Example:
