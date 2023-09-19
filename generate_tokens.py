@@ -9,7 +9,7 @@ def generate_token():
 total_cents = 46
 cents_per_token = 0.01
 
-tokens_needed = total_cents // cents_per_token
+tokens_needed = int(total_cents // cents_per_token)
 
 tokens = [generate_token() for _ in range(tokens_needed)]
 
