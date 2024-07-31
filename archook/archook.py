@@ -110,12 +110,7 @@ def get_pro_paths():
         r"""
         {C}
         {C}\Library\bin
-        {C}\Scripts
         {P}\bin
-        {P}\bin\Python
-        {P}\bin\Python\Library\bin
-        {P}\bin\Python\Scripts
-        {P}\bin\Python\condabin
         """.format(C=C, P=P))
     PRO_SYSPATHS = inspect.cleandoc(
         r"""
