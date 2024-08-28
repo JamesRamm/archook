@@ -61,7 +61,7 @@ Install in developer mode manually:
 
 Info item: as of ArcGIS Pro 2.7 arcpy is installable with Anaconda. Presumably this means you don't have to have Pro on a given machine to install and use it. (You'll still need to be able to acquire and verify a valid license of course.)
 
-    At ArcGIS Pro 2.7, ArcPy can also be added to an existing Python environment, as long as its package versions are not in conflict. To add ArcPy, use conda to install ArcPy from the Esri channel on Anaconda Cloud. From the Python Command Prompt, run the following command:
-    conda install arcpy -c esri.
-
+> At ArcGIS Pro 2.7, ArcPy can also be added to an existing Python environment, as long as its package versions are not in conflict. To add ArcPy, use conda to install ArcPy from the Esri channel on Anaconda Cloud. From the Python Command Prompt, run the following command:
+>   `conda install arcpy -c esri`
+>
 https://pro.arcgis.com/en/pro-app/latest/arcpy/get-started/installing-arcpy.htm
