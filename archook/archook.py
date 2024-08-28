@@ -110,17 +110,13 @@ def get_pro_paths():
     PRO_WIN_PATHS = inspect.cleandoc(
         r"""
         {C}
-        {C}\Library\mingw-w64
-        {C}\Library\usr\bin
         {C}\Library\bin
-        {C}\Scripts
-        {P}\Python\Scripts
         {P}\bin
         """.format(C=C, P=P))
     PRO_SYSPATHS = inspect.cleandoc(
         r"""
         {C}
-        {C}\python36.zip
+        {C}\python311.zip
         {C}\DLLs
         {C}\lib
         {C}\lib\site-packages
@@ -148,10 +144,9 @@ def get_arcpy(pro=False):
         # pro_conda_dir = locate_pro_conda()
 
         winpaths, syspaths = get_pro_paths()
-        # update Windows PATH
-        wp = os.environ["PATH"].split(";")  # save incoming path
-        [wp.insert(0, x) for x in winpaths]  # prepend our new syspath
-        os.environ["PATH"] = ";".join(wp)  # write back to environment
+        # Explicitly add directories to DLL search path. Refer to https://docs.python.org/3/library/os.html#os.add_dll_directory
+        for wp in winpaths:
+            os.add_dll_directory(wp)
         # update sys.path
         [sys.path.insert(0, x) for x in syspaths]
 
