@@ -38,10 +38,11 @@ def verify_bit_match(pro=False):
     arcbits = get_arc_bitness(pro)
     match = pybits == arcbits
     if not match:
-        msg = "*** Error: python and arcgis 32/64bit mismatch: Py:{}, Arc:{}".format(
+        msg = "\n*** Error: python and arcgis 32/64bit mismatch: Py:{}, Arc:{}\n".format(
             pybits, arcbits
         )
-        raise Exception(msg)
+        sys.exit(msg)
+        # raise Exception(msg)
     return match
 
 
