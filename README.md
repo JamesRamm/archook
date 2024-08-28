@@ -38,7 +38,12 @@ ImportError("arcpy needs to run within an active ArcGIS Conda environment")
 
 Regular install with pip:
 
-    pip install archook
+    # (Preferred) install from GitHub _master_ branch
+    pip install https://github.com/JamesRamm/archook/archive/master.zip
+
+    # install latest pypi release package (lags behind)
+    pip install archook 
+
 
 Install in developer mode using Git:
 
