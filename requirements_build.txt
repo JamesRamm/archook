@@ -4,4 +4,4 @@ distlib
 packaging==20.7
 pylint==1.9.4
 wheel==0.38.1
-requests==2.31.0
+requests==2.32.0
