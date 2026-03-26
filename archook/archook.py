@@ -3,19 +3,27 @@ Locate ArcPy and add it to the path
 Created on 13 Feb 2015
 @author: Jamesramm
 """
-import os
-import sys
-import struct
+import glob
 import inspect
+import os
+import struct
+import sys
+
 try:
     import _winreg
 except ImportError:
     import winreg as _winreg
 
 
+class ArcGISBitnessError(ImportError):
+    """Raised when the running Python bitness does not match ArcGIS."""
+
+
+
 def get_python_bitness():
     """Return bit size of active python interpreter (ie. 32, 64)"""
     return struct.calcsize("P") * 8
+
 
 
 def get_arc_bitness(pro=False):
@@ -24,12 +32,12 @@ def get_arc_bitness(pro=False):
     if pro:
         return 64
     install_dir = locate_arcgis()
-    # print(install_dir) # debug
     if os.path.exists(os.path.join(install_dir, "bin64")):
         return 64
     elif os.path.exists(os.path.join(install_dir, "bin")):
         return 32
     return None
+
 
 
 def verify_bit_match(pro=False):
@@ -38,12 +46,13 @@ def verify_bit_match(pro=False):
     arcbits = get_arc_bitness(pro)
     match = pybits == arcbits
     if not match:
-        msg = "\n*** Error: python and arcgis 32/64bit mismatch: Py:{}, Arc:{}\n".format(
-            pybits, arcbits
+        raise ArcGISBitnessError(
+            "\n*** Error: python and arcgis 32/64bit mismatch: Py:{}, Arc:{}\n".format(
+                pybits, arcbits
+            )
         )
-        sys.exit(msg)
-        # raise Exception(msg)
     return match
+
 
 
 def verify_conda_meta_dir():
@@ -61,9 +70,11 @@ Doesn't exist:
 
    You may need to create this directory if you get an error like:
 
-   ImportError("arcpy needs to run within an active ArcGIS Conda environment")
-""".format(cmeta=cmeta))
+   ImportError(\"arcpy needs to run within an active ArcGIS Conda environment\")
+""".format(cmeta=cmeta)
+        )
     return
+
 
 
 def locate_arcgis(pro=False):
@@ -101,32 +112,35 @@ def locate_arcgis(pro=False):
         raise ImportError("Could not locate the ArcGIS directory on this machine")
 
 
+
 def get_pro_paths():
     """Return 2 lists, for adding to Windows PATH and python sys.path"""
     P = locate_arcgis(pro=True)
     C = locate_pro_conda()
-    # P = r"C:\Program Files\ArcGIS\Pro"
-    # C = r"C:\Program Files\ArcGIS\Pro\bin\Python\envs\arcgispro-py3"
+    python_zip = locate_pro_python_zip(C)
     PRO_WIN_PATHS = inspect.cleandoc(
         r"""
         {C}
         {C}\Library\bin
         {P}\bin
-        """.format(C=C, P=P))
+        """.format(C=C, P=P)
+    )
     PRO_SYSPATHS = inspect.cleandoc(
         r"""
         {C}
-        {C}\python311.zip
+        {python_zip}
         {C}\DLLs
         {C}\lib
         {C}\lib\site-packages
         {P}\bin
         {P}\Resources\ArcPy
         {P}\Resources\ArcToolbox\Scripts
-        """.format(C=C, P=P))
+        """.format(C=C, P=P, python_zip=python_zip)
+    )
     winpaths = PRO_WIN_PATHS.splitlines()
     syspaths = PRO_SYSPATHS.splitlines()
     return [winpaths, syspaths]
+
 
 
 def get_arcpy(pro=False):
@@ -141,19 +155,16 @@ def get_arcpy(pro=False):
     if pro:
         verify_bit_match(pro)
         verify_conda_meta_dir()
-        # pro_conda_dir = locate_pro_conda()
 
         winpaths, syspaths = get_pro_paths()
-        # Explicitly add directories to DLL search path. Refer to https://docs.python.org/3/library/os.html#os.add_dll_directory
         for wp in winpaths:
             os.add_dll_directory(wp)
-        # update sys.path
-        [sys.path.insert(0, x) for x in syspaths]
+        for path in syspaths:
+            sys.path.insert(0, path)
 
     else:
         verify_bit_match()
         arcpy = os.path.join(install_dir, "arcpy")
-        # Check we have the arcpy directory.
         if not os.path.exists(arcpy):
             raise ImportError(
                 "Could not find arcpy directory in {0}".format(install_dir)
@@ -164,23 +175,10 @@ def get_arcpy(pro=False):
         else:
             bin_dir = os.path.join(install_dir, "bin")
 
-        # Update Python's path
         dirs = ["", arcpy, bin_dir, "ArcToolbox/Scripts"]
         for p in dirs:
             sys.path.insert(0, os.path.join(install_dir, p))
 
-        # # First check if we have a bin64 directory - this exists when arcgis is 64bit
-        # bin64_dir = os.path.join(install_dir, 'bin64')
-
-        # # check if we are using a 64-bit version of Python
-        # is_64bits = sys.maxsize > 2**32
-
-        # if not os.path.exists(bin_dir) or not is_64bits:
-        #     # Fall back to regular 'bin' dir otherwise.
-        #     bin_dir = os.path.join(install_dir, 'bin')
-
-        # scripts = os.path.join(install_dir, 'ArcToolbox', 'Scripts')
-        # sys.path.extend([arcpy, bin_dir, scripts])
 
 
 def locate_pro_conda():
@@ -203,12 +201,26 @@ def locate_pro_conda():
         raise ImportError("Could not locate the Conda directory on this machine")
 
 
+
+
+
+def locate_pro_python_zip(conda_path):
+    """Return the Python zip file inside the ArcGIS Pro conda environment."""
+    candidates = sorted(glob.glob(os.path.join(conda_path, "python*.zip")))
+    if not candidates:
+        raise ImportError(
+            "Could not locate the Python zip file in {}".format(conda_path)
+        )
+    return candidates[0]
+
+
 def get_pro_key():
     """
     Returns ArcGIS Pro's registry key.
     """
     pro_key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\ESRI\ArcGISPro")
     return pro_key
+
 
 
 def thankyou():

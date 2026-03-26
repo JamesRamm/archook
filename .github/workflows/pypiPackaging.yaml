@@ -1,3 +1,4 @@
+# TODO: Modernize or remove this legacy release workflow in a follow-up.
 name: Python package
 
 on:
