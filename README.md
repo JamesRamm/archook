@@ -1,67 +1,81 @@
 [![PyPI version](https://badge.fury.io/py/archook.svg)](https://badge.fury.io/py/archook)
 
 # archook
-Searches the (windows) system for arcgis and makes arcpy available to python (regardless of pythonpath/system path/registry settings). It's typically used when using a python distribution that's wasn't installed by ArcGIS. Ones downloaded direct from Python.org or a conda environment for two examples.
 
-If ArcGIS is not found, an `ImportError` is thrown.
+`archook` searches a Windows machine for ArcGIS and updates the active Python
+process so `arcpy` can be imported from a Python installation that ArcGIS did
+not manage directly.
+
+If ArcGIS is not found, `archook` raises `ImportError`.
 
 Use `pro=True` to target ArcGIS Pro instead of ArcGIS Desktop.
 
-## Example usage
+## Usage
 
 ### ArcGIS Desktop
+
 ```python
 try:
-    import archook #The module which locates arcgis
+    import archook
+
     archook.get_arcpy()
     import arcpy
 except ImportError:
-    # do whatever you do if arcpy isnt there.
+    pass
 ```
+
 ### ArcGIS Pro
+
 ```python
 try:
-    import archook #The module which locates arcgis
+    import archook
+
     archook.get_arcpy(pro=True)
     import arcpy
 except ImportError:
-    # do whatever you do if arcpy isnt there.
+    pass
 ```
 
-**Note:** You may need to create a `conda-meta` directory in your Python interpreter's directory (referred to by `sys.prefix`) if you get an error like the following:
+## Install
 
+Install the published package with `pip`:
+
+```powershell
+pip install archook
 ```
-ImportError("arcpy needs to run within an active ArcGIS Conda environment")
+
+Install directly from GitHub:
+
+```powershell
+pip install https://github.com/JamesRamm/archook/archive/refs/heads/master.zip
 ```
 
-## Installation
+## Develop
 
-Regular install with pip:
+Requires Python 3.10 or later.
 
-    # (Preferred) install from GitHub _master_ branch
-    pip install https://github.com/JamesRamm/archook/archive/master.zip
+Create the project environment and install the dev tools with `uv`:
 
-    # install latest pypi release package (lags behind)
-    pip install archook 
+```powershell
+uv sync --group dev
+```
 
+Run the test suite:
 
-Install in developer mode using Git:
+```powershell
+uv run pytest -q
+```
 
-    git clone https://github.com/JamesRamm/archook.git
-    pip install --editable .\archook
-    
-Install in developer mode manually:
+Build source and wheel distributions:
 
-- Fetch https://github.com/JamesRamm/archook/archive/master.zip
-- unzip `%userprofile%\downloads\archook-master.zip`
-- run `pip install --editable path\to\archook-master`
+```powershell
+uv build
+```
 
+## Notes
 
-## Exploration
+ArcGIS Pro may require a `conda-meta` directory under the active interpreter's
+`sys.prefix`. If `arcpy` reports that it must run inside an active ArcGIS conda
+environment, create that directory and retry.
 
-Info item: as of ArcGIS Pro 2.7 arcpy is installable with Anaconda. Presumably this means you don't have to have Pro on a given machine to install and use it. (You'll still need to be able to acquire and verify a valid license of course.)
-
-> At ArcGIS Pro 2.7, ArcPy can also be added to an existing Python environment, as long as its package versions are not in conflict. To add ArcPy, use conda to install ArcPy from the Esri channel on Anaconda Cloud. From the Python Command Prompt, run the following command:
->   `conda install arcpy -c esri`
->
-https://pro.arcgis.com/en/pro-app/latest/arcpy/get-started/installing-arcpy.htm
+Archook was developed by James Ramm, currently maintained by Matt Wilkie.
