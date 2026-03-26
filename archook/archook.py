@@ -4,7 +4,6 @@ Created on 13 Feb 2015
 @author: Jamesramm
 """
 import glob
-import inspect
 import os
 import struct
 import sys
@@ -118,27 +117,29 @@ def get_pro_paths():
     P = locate_arcgis(pro=True)
     C = locate_pro_conda()
     python_zip = locate_pro_python_zip(C)
-    PRO_WIN_PATHS = inspect.cleandoc(
-        r"""
-        {C}
-        {C}\Library\bin
-        {P}\bin
-        """.format(C=C, P=P)
-    )
-    PRO_SYSPATHS = inspect.cleandoc(
-        r"""
-        {C}
-        {python_zip}
-        {C}\DLLs
-        {C}\lib
-        {C}\lib\site-packages
-        {P}\bin
-        {P}\Resources\ArcPy
-        {P}\Resources\ArcToolbox\Scripts
-        """.format(C=C, P=P, python_zip=python_zip)
-    )
-    winpaths = PRO_WIN_PATHS.splitlines()
-    syspaths = PRO_SYSPATHS.splitlines()
+    winpaths = [
+        C,
+        os.path.join(C, "Scripts"),
+        os.path.join(C, "Library", "bin"),
+        os.path.join(P, "bin"),
+        os.path.join(P, "bin", "Python"),
+        os.path.join(P, "bin", "Python", "Library", "bin"),
+        os.path.join(P, "bin", "Python", "Scripts"),
+        os.path.join(P, "bin", "Python", "condabin"),
+    ]
+    syspaths = [
+        C,
+        os.path.join(C, "DLLs"),
+        os.path.join(C, "lib"),
+        os.path.join(C, "lib", "site-packages"),
+        os.path.join(P, "bin"),
+        os.path.join(P, "Resources", "ArcPy"),
+        os.path.join(P, "Resources", "ArcToolbox", "Scripts"),
+    ]
+    if python_zip:
+        syspaths.insert(1, python_zip)
+    winpaths = [path for path in winpaths if os.path.exists(path)]
+    syspaths = [path for path in syspaths if os.path.exists(path)]
     return [winpaths, syspaths]
 
 
@@ -157,6 +158,21 @@ def get_arcpy(pro=False):
         verify_conda_meta_dir()
 
         winpaths, syspaths = get_pro_paths()
+        path_entries = os.environ["PATH"].split(os.pathsep)
+        # Deduplicate existing PATH entries while preserving order
+        seen = set()
+        deduped = []
+        for entry in path_entries:
+            if entry not in seen:
+                seen.add(entry)
+                deduped.append(entry)
+        path_entries = deduped
+        # Prepend winpaths that aren't already in PATH
+        for wp in reversed(winpaths):
+            if wp not in seen:
+                path_entries.insert(0, wp)
+                seen.add(wp)
+        os.environ["PATH"] = os.pathsep.join(path_entries)
         for wp in winpaths:
             os.add_dll_directory(wp)
         for path in syspaths:
@@ -205,13 +221,9 @@ def locate_pro_conda():
 
 
 def locate_pro_python_zip(conda_path):
-    """Return the Python zip file inside the ArcGIS Pro conda environment."""
+    """Return the Python zip file inside the ArcGIS Pro conda environment if present."""
     candidates = sorted(glob.glob(os.path.join(conda_path, "python*.zip")))
-    if not candidates:
-        raise ImportError(
-            "Could not locate the Python zip file in {}".format(conda_path)
-        )
-    return candidates[0]
+    return candidates[0] if candidates else None
 
 
 def get_pro_key():
