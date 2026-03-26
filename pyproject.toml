@@ -30,6 +30,7 @@ classifiers = [
 Homepage = "https://github.com/JamesRamm/archook"
 Repository = "https://github.com/JamesRamm/archook"
 Issues = "https://github.com/JamesRamm/archook/issues"
+Changelog = "https://github.com/JamesRamm/archook/blob/master/CHANGELOG.md"
 
 [dependency-groups]
 dev = [
